@@ -13,7 +13,9 @@
     
     input2: .asciiz "\nEnter account number: "
 
-    input3: .asciiz "\nEnter amount to deposit"
+    input3: .asciiz "\nEnter amount to deposit: "
+
+    input4: .asciiz "\nEnter amount to withdraw: "
 
 .text
 
@@ -56,7 +58,10 @@ main:
 
     twotwo:
 
+        jal choice_two
+
     threethree:
+        jal choice_three
 
     two:
 
@@ -202,6 +207,52 @@ choice_one:
 jr $ra
 .end choice_one
 
+#Choice two function 
+.ent choice_two
+choice_two:
+
+
+
+
+jr $ra
+.end choice_two
+
+
+#Choice three function
+.ent choice_three
+choice_two:
+
+    #User wants to withdraw amount
+
+    #Displaying a message to display account number
+    li $v0, 4
+    la $a0, input2
+    syscall
+
+    #Reading user's account number
+    li $v0, 5
+    syscall
+
+    #saving account number to $t4
+    move $t4, $v0
+
+    #Display message of amount to withdraw
+    li $v0, 4
+    la $a0, input3
+    syscall
+
+    #Reading user's input of amount to withdraw
+    li $v0, 5
+    syscall
+
+    #saving amount to withdraw into $t5
+    move $t5, $v0
+
+
+jr $ra
+.end choice_three
+
+#calculate address
 .ent calculate_address
  calculate_address:
 
