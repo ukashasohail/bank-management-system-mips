@@ -17,7 +17,13 @@
 
     input4: .asciiz "\nEnter amount to withdraw: "
 
-    msg: .asciiz "\nYou don't have enough amount"
+    msg: .asciiz "\nYou don't have enough amount!!"
+
+    msg1:.asciiz "\nEnter your account number: "
+
+    msg2: .asciiz "\nEnter reciever's account number: "
+    
+    msg3: .asciiz "\nEnter ammount to transfer: "
 
 .text
 
@@ -49,8 +55,6 @@ main:
     # $t2 = 1 2 OR 3
     move $t2, $a0
 
-
-
     # if choice is 2 then move to two two
     beq $t2, $t1, twotwo
 
@@ -58,6 +62,9 @@ main:
     beq $t2, $t3, threethree
 
     jal choice_one
+
+    li $v0, 10
+    syscall
 
 
     twotwo:
@@ -69,6 +76,9 @@ main:
 
     threethree:
         jal choice_three
+
+        li $v0, 10
+        syscall
 
     two:
 
@@ -162,10 +172,12 @@ choice_one:
     #setting $t7 to 5
     addi $t7, $0, 5
 
-    loop1:
-
         addi $sp, $sp, -4
         sw $ra, 0($sp)
+
+
+    loop1:
+
 
         beq $t6, $t7, exit
 
@@ -217,15 +229,13 @@ choice_one:
 jr $ra
 .end choice_one
 
-#Choice three function 
-.ent choice_three
-choice_three:
 
 
 
 
-jr $ra
-.end choice_three
+
+
+
 
 
 #Choice two function
@@ -323,6 +333,29 @@ choice_two:
 jr $ra
 .end choice_two
 
+
+
+
+
+#Choice three function 
+.ent choice_three
+choice_three:
+
+    #User wants to transfer amount
+
+    
+
+
+jr $ra
+.end choice_three
+
+
+
+
+
+
+
+
 #calculate address
 .ent calculate_address
  calculate_address:
@@ -367,15 +400,21 @@ jr $ra
 
         jr $ra 
 
-    .end calculate_address
+.end calculate_address
 
     
     
-    not_enough_amount:
+not_enough_amount:
 
-        li $v0, 4
-        la $a0, msg
-        syscall
+    li $v0, 4
+    la $a0, msg
+    syscall
 
-        li $v0, 10
-        syscall
+    li $v0, 10
+    syscall
+
+.ent two
+two:
+
+jr $ra
+.end two

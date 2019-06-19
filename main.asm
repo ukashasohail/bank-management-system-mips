@@ -15,6 +15,8 @@
 
     input3: .asciiz "\nEnter amount to deposit"
 
+    in
+
 .text
 
 .globl main
