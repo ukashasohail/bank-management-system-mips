@@ -17,6 +17,8 @@
 
     input4: .asciiz "\nEnter amount to withdraw: "
 
+    msg: .asciiz "\nYou don't have enough amount"
+
 .text
 
 .globl main
@@ -47,6 +49,8 @@ main:
     # $t2 = 1 2 OR 3
     move $t2, $a0
 
+
+
     # if choice is 2 then move to two two
     beq $t2, $t1, twotwo
 
@@ -59,6 +63,9 @@ main:
     twotwo:
 
         jal choice_two
+
+        li $v0, 10
+        syscall
 
     threethree:
         jal choice_three
@@ -111,6 +118,8 @@ choice_message:
     #taking User input 1, 2, 3
     li $v0, 5
     syscall
+
+    move $a0, $v0
 
 jr $ra
 .end choice_message
@@ -168,8 +177,6 @@ choice_one:
 
         jal calculate_address 
 
-        lw $ra, 0($sp)
-
         #address is in t8
         move $s5, $v0
 
@@ -204,22 +211,25 @@ choice_one:
             syscall
             ######
 
+
+        lw $ra, 0($sp)
+
 jr $ra
 .end choice_one
 
-#Choice two function 
-.ent choice_two
-choice_two:
+#Choice three function 
+.ent choice_three
+choice_three:
 
 
 
 
 jr $ra
-.end choice_two
+.end choice_three
 
 
-#Choice three function
-.ent choice_three
+#Choice two function
+.ent choice_two
 choice_two:
 
     #User wants to withdraw amount
@@ -238,7 +248,7 @@ choice_two:
 
     #Display message of amount to withdraw
     li $v0, 4
-    la $a0, input3
+    la $a0, input4
     syscall
 
     #Reading user's input of amount to withdraw
@@ -248,13 +258,81 @@ choice_two:
     #saving amount to withdraw into $t5
     move $t5, $v0
 
+    #setting loop variable t6 to 0
+    addi $t6, $0, 0
+
+    #setting $t7 to 5
+    addi $t7, $0, 5
+
+        addi $sp, $sp, -4
+        sw $ra, 0($sp)
+
+    loop2:
+      
+
+        beq $t6, $t7, exit1
+
+        #setting column index to 0 which will remain constant
+        addi $a2, $0, 0
+
+        #setting row index to loop variable
+        addi $a1, $t6, 0
+
+        jal calculate_address
+
+        #address in $t8
+        move $s5, $v0
+
+        lw $t8, ($s5)
+
+        bne $t8, $t4, here1
+
+            #loading amount of that account number into s3
+            lw $s3, 4($s5)
+
+           # checking if amount is enough to withdraw
+           slt $s6, $s3, $t5
+
+           bne $s6, $0, not_enough_amount
+
+            #detecting amount from account
+            sub $s3, $s3, $t5
+
+            sw $s3, 4($s5)
+
+            j exit1
+        
+        here1:
+            #adding 1 in loop variable
+            addi $t6, $t6, 1
+
+        j loop2
+
+        exit1:
+
+            ######
+            lw $s4, 4($s5)
+            li $v0,1
+            move $a0, $s4
+            syscall
+            ######
+          
+    lw $ra, 0($sp)
+    addi $sp, $sp, 4
 
 jr $ra
-.end choice_three
+.end choice_two
 
 #calculate address
 .ent calculate_address
  calculate_address:
+
+    addi $sp, $sp, -8
+    sw $s6, 0($sp)
+    sw $s7, 4($sp)
+
+        #array address in t9
+        la $t9, array
 
         #column_size = 2
         addi $s6, $0, 2
@@ -283,6 +361,21 @@ jr $ra
         #returning address answer
         move $v0, $s2
 
+        lw $s6, 0($sp)
+        lw $s7, 4($sp)
+        addi $sp, $sp, 8
+
         jr $ra 
 
     .end calculate_address
+
+    
+    
+    not_enough_amount:
+
+        li $v0, 4
+        la $a0, msg
+        syscall
+
+        li $v0, 10
+        syscall
