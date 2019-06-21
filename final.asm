@@ -80,7 +80,7 @@ main:
         li $v0, 10
         syscall
 
-    two:
+    # jal two
 
 
 #Exiting main
@@ -413,6 +413,8 @@ not_enough_amount:
     li $v0, 10
     syscall
 
+#starting two option
+#create account
 .ent two
 two:
 
