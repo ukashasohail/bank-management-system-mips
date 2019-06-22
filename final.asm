@@ -414,7 +414,7 @@ not_enough_amount:
     syscall
 
 #starting two option
-#create account
+#create account function
 .ent two
 two:
 
