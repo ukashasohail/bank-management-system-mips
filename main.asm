@@ -6,6 +6,7 @@
            .word 1002, 1500
            .word 1003, 5000
            .word 1004, 3000
+           .word 1005, 4000
 
     input1: .asciiz "\nPress 1 for operation \nPress 2 to create account: "
 
